@@ -1,11 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, getIdToken } from 'firebase/auth';
+import { auth } from '../services/firebase';
 
 // ---------------------------------------------------------------------------
-// Auth Context — wraps JWT-based login/logout state for the website
-// Backend endpoint: POST https://api.nandhas.in/api/auth/login
-// Token is stored in localStorage under 'nandhas_auth_token'
+// Auth Context — wraps Firebase Phone Auth and our custom JWT backend state
 // ---------------------------------------------------------------------------
 
 const AUTH_TOKEN_KEY = 'nandhas_auth_token';
@@ -14,11 +14,12 @@ const AUTH_USER_KEY = 'nandhas_auth_user';
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);       // { id, email, fullName, role }
-  const [token, setToken] = useState(null);     // JWT string
-  const [loading, setLoading] = useState(true); // hydrating from localStorage
+  const [user, setUser] = useState(null);       // Backend user: { id, email, fullName, role }
+  const [token, setToken] = useState(null);     // Backend JWT string
+  const [firebaseUser, setFirebaseUser] = useState(null); // Firebase user object
+  const [loading, setLoading] = useState(true); // initializing
 
-  // Hydrate from localStorage on mount (client only)
+  // Hydrate from localStorage on mount (client only) for backend session
   useEffect(() => {
     try {
       const storedToken = localStorage.getItem(AUTH_TOKEN_KEY);
@@ -29,16 +30,22 @@ export function AuthProvider({ children }) {
       }
     } catch (e) {
       // Ignore parse errors — treat as logged out
-    } finally {
-      setLoading(false);
     }
   }, []);
 
-  /**
-   * Called after a successful POST /api/auth/login response.
-   * @param {string} jwtToken - Bearer token returned from the backend
-   * @param {object} userInfo - { id, email, fullName, role }
-   */
+  // Listen to Firebase Auth state
+  useEffect(() => {
+    if (!auth) {
+      setLoading(false);
+      return;
+    }
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setFirebaseUser(currentUser);
+      setLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
+
   const saveAuth = useCallback((jwtToken, userInfo) => {
     setToken(jwtToken);
     setUser(userInfo);
@@ -46,14 +53,17 @@ export function AuthProvider({ children }) {
       localStorage.setItem(AUTH_TOKEN_KEY, jwtToken);
       localStorage.setItem(AUTH_USER_KEY, JSON.stringify(userInfo));
     } catch (e) {
-      // localStorage blocked (e.g. private browsing) — still keep in state
+      // localStorage blocked
     }
   }, []);
 
-  /**
-   * Clear authentication state and storage.
-   */
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
+    try {
+      await signOut(auth); // Sign out of Firebase
+    } catch (err) {
+      console.error('Firebase signout error:', err);
+    }
+    
     setToken(null);
     setUser(null);
     try {
@@ -62,19 +72,48 @@ export function AuthProvider({ children }) {
     } catch (e) {}
   }, []);
 
+  // Firebase Phone Auth methods
+  const setupRecaptcha = (containerId) => {
+    if (!window.recaptchaVerifier) {
+      window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
+        size: 'invisible',
+        callback: () => {
+          // reCAPTCHA solved
+        },
+      });
+    }
+  };
+
+  const sendOtp = async (phoneNumber, containerId) => {
+    setupRecaptcha(containerId);
+    const appVerifier = window.recaptchaVerifier;
+    return await signInWithPhoneNumber(auth, phoneNumber, appVerifier);
+  };
+
+  const getFirebaseIdToken = async () => {
+    if (!auth.currentUser) return null;
+    return await getIdToken(auth.currentUser, true);
+  };
+
   const isAuthenticated = Boolean(token && user);
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, loading, saveAuth, logout }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      token, 
+      firebaseUser,
+      isAuthenticated, 
+      loading, 
+      saveAuth, 
+      logout,
+      sendOtp,
+      getFirebaseIdToken
+    }}>
       {children}
     </AuthContext.Provider>
   );
 }
 
-/**
- * Hook to access authentication state throughout the app.
- * Usage: const { user, isAuthenticated, logout } = useAuth();
- */
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) {

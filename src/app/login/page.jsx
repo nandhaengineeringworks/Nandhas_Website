@@ -5,26 +5,33 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   User, 
-  Lock, 
-  Eye, 
-  EyeOff, 
+  Phone,
+  KeyRound,
   AlertCircle, 
   Loader2, 
   Shield,
   ChevronRight,
-  LogIn
+  LogIn,
+  CheckCircle2,
+  ArrowRight
 } from 'lucide-react';
-import { loginUser } from '../../services/api';
+import { loginWithFirebase } from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
 
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { saveAuth, isAuthenticated } = useAuth();
+  const { saveAuth, isAuthenticated, sendOtp, getFirebaseIdToken } = useAuth();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  // 'phone' | 'otp' | 'create'
+  const [step, setStep] = useState('phone'); 
+  
+  const [phoneNumber, setPhoneNumber] = useState('+91');
+  const [otp, setOtp] = useState('');
+  const [fullName, setFullName] = useState('');
+  
+  const [confirmationResult, setConfirmationResult] = useState(null);
+  
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -38,19 +45,64 @@ function LoginContent() {
     }
   }, [isAuthenticated, redirectTo, router]);
 
-  const handleSubmit = async (e) => {
+  const handleSendOtp = async (e) => {
+    if (e) e.preventDefault();
+    setError('');
+    
+    // Basic validation
+    if (!phoneNumber || phoneNumber.length < 10) {
+      setError('Please enter a valid phone number with country code (e.g., +91).');
+      return;
+    }
+
+    if (step === 'create' && !fullName.trim()) {
+      setError('Please enter your full name.');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      // Ensure E.164 format roughly
+      let formattedPhone = phoneNumber.trim();
+      if (!formattedPhone.startsWith('+')) {
+        formattedPhone = '+' + formattedPhone;
+      }
+      
+      const result = await sendOtp(formattedPhone, 'recaptcha-container');
+      setConfirmationResult(result);
+      setStep('otp');
+    } catch (err) {
+      console.error(err);
+      setError('Failed to send OTP. Please check your phone number and try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleVerifyOtp = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
-      const data = await loginUser(email.trim().toLowerCase(), password);
+      if (!confirmationResult) throw new Error('No OTP session found.');
+      
+      // Verify OTP with Firebase
+      await confirmationResult.confirm(otp);
+      
+      // Get Firebase ID Token
+      const idToken = await getFirebaseIdToken();
+      if (!idToken) throw new Error('Authentication failed. No token received.');
+
+      // Send to our backend POST /api/auth/firebase
+      const data = await loginWithFirebase(idToken);
 
       if (!data?.token) {
-        throw new Error('No token received from server. Please try again.');
+        throw new Error('Server did not return a valid session.');
       }
 
-      // Store the JWT and user info using AuthContext (saves to localStorage)
+      // Store the JWT and user info
       saveAuth(data.token, {
         id: data.id,
         email: data.email,
@@ -58,19 +110,16 @@ function LoginContent() {
         role: data.role,
       });
 
-      // Navigate to redirect target or homepage
       router.replace(redirectTo);
     } catch (err) {
+      console.error(err);
       const status = err?.response?.status;
       if (status === 401 || status === 403) {
-        setError('Invalid email or password. Please check your credentials and try again.');
-      } else if (status === 404) {
-        setError('Account not found. Please contact Nandhas Engineering Works support.');
+        setError('Invalid OTP code. Please try again.');
       } else {
         setError(
           err?.response?.data?.message ||
-          err?.message ||
-          'Login failed. Please try again or contact support.'
+          'Verification failed. The code might be expired or incorrect.'
         );
       }
     } finally {
@@ -90,16 +139,23 @@ function LoginContent() {
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden">
+        <div className="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden relative">
+
+          {/* Invisible ReCAPTCHA Container */}
+          <div id="recaptcha-container"></div>
 
           {/* Header Banner */}
           <div className="bg-navy-800 px-8 py-7 text-white text-center space-y-2">
             <div className="mx-auto w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-3">
-              <User className="w-6 h-6 text-white" />
+              {step === 'create' ? <User className="w-6 h-6 text-white" /> : <Phone className="w-6 h-6 text-white" />}
             </div>
-            <h1 className="text-xl font-black font-display tracking-tight">My Account — Login</h1>
+            <h1 className="text-xl font-black font-display tracking-tight">
+              {step === 'create' ? 'Create Account' : 'My Account — Login'}
+            </h1>
             <p className="text-xs text-slate-300 leading-relaxed">
-              Sign in to access your Nandhas account, orders, and quotation history.
+              {step === 'create' 
+                ? 'Join Nandhas to track orders and manage quotations.' 
+                : 'Sign in to access your Nandhas account with your phone number.'}
             </p>
           </div>
 
@@ -113,91 +169,181 @@ function LoginContent() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-
-              {/* Email */}
-              <div className="space-y-1.5">
-                <label htmlFor="login-email" className="block text-xs font-semibold text-slate-700">
-                  Email Address
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                  <input
-                    id="login-email"
-                    type="email"
-                    required
-                    autoComplete="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="you@example.com"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-xs text-slate-800 bg-slate-50 outline-none focus:ring-2 focus:ring-navy-800/20 focus:border-navy-800 transition placeholder:text-slate-400"
-                  />
+            {/* STEP: PHONE ENTRY */}
+            {step === 'phone' && (
+              <form onSubmit={handleSendOtp} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="login-phone" className="block text-xs font-semibold text-slate-700">
+                    Phone Number
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <input
+                      id="login-phone"
+                      type="tel"
+                      required
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder="+91 99999 99999"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-xs text-slate-800 bg-slate-50 outline-none focus:ring-2 focus:ring-navy-800/20 focus:border-navy-800 transition placeholder:text-slate-400"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Password */}
-              <div className="space-y-1.5">
-                <label htmlFor="login-password" className="block text-xs font-semibold text-slate-700">
-                  Password
-                </label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
-                  <input
-                    id="login-password"
-                    type={showPassword ? 'text' : 'password'}
-                    required
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter your password"
-                    className="w-full pl-10 pr-12 py-3 rounded-xl border border-slate-200 text-xs text-slate-800 bg-slate-50 outline-none focus:ring-2 focus:ring-navy-800/20 focus:border-navy-800 transition placeholder:text-slate-400"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 transition"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-xl bg-navy-800 hover:bg-navy-900 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Sending OTP...</span>
+                    </>
+                  ) : (
+                    <>
+                      <LogIn className="w-4 h-4" />
+                      <span>Send OTP</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+
+            {/* STEP: CREATE ACCOUNT */}
+            {step === 'create' && (
+              <form onSubmit={handleSendOtp} className="space-y-4">
+                <div className="space-y-1.5">
+                  <label htmlFor="create-name" className="block text-xs font-semibold text-slate-700">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <input
+                      id="create-name"
+                      type="text"
+                      required
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Enter your full name"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-xs text-slate-800 bg-slate-50 outline-none focus:ring-2 focus:ring-navy-800/20 focus:border-navy-800 transition placeholder:text-slate-400"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full py-3.5 rounded-xl bg-navy-800 hover:bg-navy-900 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60"
-              >
-                {loading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Signing In...</span>
-                  </>
-                ) : (
-                  <>
-                    <LogIn className="w-4 h-4" />
-                    <span>Sign In to My Account</span>
-                  </>
-                )}
-              </button>
-            </form>
+                <div className="space-y-1.5">
+                  <label htmlFor="create-phone" className="block text-xs font-semibold text-slate-700">
+                    Phone Number
+                  </label>
+                  <div className="relative">
+                    <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <input
+                      id="create-phone"
+                      type="tel"
+                      required
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder="+91 99999 99999"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-xs text-slate-800 bg-slate-50 outline-none focus:ring-2 focus:ring-navy-800/20 focus:border-navy-800 transition placeholder:text-slate-400"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-3.5 rounded-xl bg-navy-800 hover:bg-navy-900 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Sending OTP...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ArrowRight className="w-4 h-4" />
+                      <span>Send OTP</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+
+            {/* STEP: VERIFY OTP */}
+            {step === 'otp' && (
+              <form onSubmit={handleVerifyOtp} className="space-y-4">
+                <div className="text-center pb-2">
+                  <p className="text-xs text-slate-500">OTP sent to <span className="font-bold text-slate-900">{phoneNumber}</span></p>
+                  <button type="button" onClick={() => setStep('phone')} className="text-[10px] text-accent-orange font-bold hover:underline mt-1">Change Number</button>
+                </div>
+                
+                <div className="space-y-1.5">
+                  <label htmlFor="otp-code" className="block text-xs font-semibold text-slate-700">
+                    Enter OTP
+                  </label>
+                  <div className="relative">
+                    <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <input
+                      id="otp-code"
+                      type="text"
+                      required
+                      maxLength={6}
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="• • • • • •"
+                      className="w-full pl-10 pr-4 py-3 text-center tracking-[0.5em] font-mono text-lg rounded-xl border border-slate-200 text-slate-800 bg-slate-50 outline-none focus:ring-2 focus:ring-navy-800/20 focus:border-navy-800 transition placeholder:text-slate-300 placeholder:tracking-normal placeholder:font-sans placeholder:text-xs"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading || otp.length < 6}
+                  className="w-full py-3.5 rounded-xl bg-accent-orange hover:bg-orange-600 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Verifying...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Verify OTP &amp; Login</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
 
             {/* Security Note */}
             <div className="flex items-center gap-2 text-[10px] text-slate-400 pt-1">
               <Shield className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
-              <span>Your login is secured using JWT authentication. We never store your password.</span>
+              <span>Your login is secured using Firebase authentication. We never store passwords.</span>
             </div>
           </div>
+          
+          {/* Toggle Create / Login */}
+          {(step === 'phone' || step === 'create') && (
+            <div className="border-t border-slate-100 bg-slate-50 px-7 py-4 text-center">
+              {step === 'phone' ? (
+                <p className="text-xs text-slate-500">
+                  New to Nandhas?{' '}
+                  <button type="button" onClick={() => setStep('create')} className="font-bold text-navy-800 hover:text-accent-orange transition">
+                    Create Account
+                  </button>
+                </p>
+              ) : (
+                <p className="text-xs text-slate-500">
+                  Already have an account?{' '}
+                  <button type="button" onClick={() => setStep('phone')} className="font-bold text-navy-800 hover:text-accent-orange transition">
+                    Sign In
+                  </button>
+                </p>
+              )}
+            </div>
+          )}
         </div>
-
-        {/* Bottom Note */}
-        <p className="text-center text-xs text-slate-500">
-          Need help?{' '}
-          <Link href="/contact" className="font-bold text-navy-800 hover:text-accent-orange transition">
-            Contact Nandhas Support
-          </Link>
-        </p>
       </div>
     </div>
   );
