@@ -74,6 +74,9 @@ export function AuthProvider({ children }) {
 
   // Firebase Phone Auth methods
   const setupRecaptcha = (containerId) => {
+    if (!auth) {
+      throw new Error('Firebase is not configured. Please set NEXT_PUBLIC_FIREBASE_API_KEY environment variable.');
+    }
     if (!window.recaptchaVerifier) {
       window.recaptchaVerifier = new RecaptchaVerifier(auth, containerId, {
         size: 'invisible',

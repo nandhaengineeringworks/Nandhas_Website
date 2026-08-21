@@ -10,9 +10,9 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Only initialize if we have the config (prevents build-time crashes)
+// Only initialize if we have an API key (prevents both build-time and runtime crashes)
 let app;
-if (typeof window !== 'undefined' || process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
+if (process.env.NEXT_PUBLIC_FIREBASE_API_KEY) {
   app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 }
 
