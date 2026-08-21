@@ -124,14 +124,33 @@ export const loginUser = async (email, password) => {
 };
 
 /**
+ * Check if a customer mobile number exists in the backend database.
+ * Endpoint: GET /api/auth/check-phone
+ * @param {string} phone
+ * @returns {Promise<{ exists: boolean, fullName?: string, email?: string }>}
+ */
+export const checkPhoneNumber = async (phone) => {
+  try {
+    const res = await api.get('/auth/check-phone', { params: { phone } });
+    return res.data?.data || { exists: false };
+  } catch (err) {
+    console.error('checkPhoneNumber error:', err);
+    return { exists: false };
+  }
+};
+
+/**
  * Authenticate user via Firebase Phone Auth ID token.
  * Endpoint: POST /api/auth/firebase
  * @param {string} firebaseIdToken
  * @param {string} fullName (Optional) for new customers
+ * @param {string} email (Optional) for new customers
  * @returns {Promise<{ token: string, tokenType: string, id, email, fullName, role }>}
  */
-export const loginWithFirebase = async (firebaseIdToken, fullName = null) => {
-  const payload = fullName ? { fullName } : {};
+export const loginWithFirebase = async (firebaseIdToken, fullName = null, email = null) => {
+  const payload = {};
+  if (fullName) payload.fullName = fullName;
+  if (email) payload.email = email;
   const res = await api.post('/auth/firebase', payload, {
     headers: {
       Authorization: `Bearer ${firebaseIdToken}`
