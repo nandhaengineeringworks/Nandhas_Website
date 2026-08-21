@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 // When running SSR, call http://localhost:8080/api directly, on client call /api
-const isServer = typeof window === 'undefined';
-const API_BASE_URL = 'https://api.nandhas.in/api';
+// const isServer = typeof window === 'undefined';
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL || 'https://api.nandhas.in/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -10,7 +11,6 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
-
 export const getCategories = async (type, rootOnly = false) => {
   try {
     const params = {};
