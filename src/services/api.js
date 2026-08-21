@@ -111,4 +111,17 @@ export const getPublicSettings = async () => {
   }
 };
 
+/**
+ * Authenticate user/admin via the backend JWT login endpoint.
+ * Endpoint: POST /api/auth/login  (public — no token required)
+ * @param {string} email
+ * @param {string} password
+ * @returns {Promise<{ token: string, tokenType: string, id, email, fullName, role }>}
+ */
+export const loginUser = async (email, password) => {
+  const res = await api.post('/auth/login', { email, password });
+  // Backend wraps response in ApiResponse<AuthResponseDTO>
+  return res.data?.data || res.data;
+};
+
 export default api;
