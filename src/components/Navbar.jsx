@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -304,7 +304,7 @@ export default function Navbar() {
                 <Search className="w-5 h-5" />
               </button>
 
-              {/* My Account — Desktop (authenticated dropdown) + Mobile (icon only → /login) */}
+              {/* My Account ΓÇö Desktop (authenticated dropdown) + Mobile (icon only ΓåÆ /login) */}
               <div ref={accountRef} className="relative">
                 {isAuthenticated ? (
                   /* Authenticated: show user name + dropdown toggle */
@@ -327,11 +327,11 @@ export default function Navbar() {
                     <ChevronDown className={`w-3.5 h-3.5 text-slate-400 hidden md:block transition-transform ${accountDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
                 ) : (
-                  /* Logged out: icon on mobile, icon+label on sm+ — both link to /login */
+                  /* Logged out: icon on mobile, icon+label on sm+ ΓÇö both link to /login */
                   <Link
                     href="/login"
                     className="flex items-center gap-2 p-2 sm:px-2.5 sm:py-1 rounded-xl transition group hover:bg-slate-50 border border-transparent hover:border-slate-200"
-                    aria-label="My Account — Login"
+                    aria-label="My Account ΓÇö Login"
                   >
                     <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-700 group-hover:bg-navy-800 group-hover:text-white transition shrink-0">
                       <User className="w-4 h-4" />
@@ -657,7 +657,7 @@ export default function Navbar() {
                 {/* Primary Nav Links */}
                 <div className="space-y-1 border-b border-navy-800 pb-4">
 
-                  {/* My Account / Login Row — always visible in mobile drawer */}
+                  {/* My Account / Login Row ΓÇö always visible in mobile drawer */}
                   {isAuthenticated ? (
                     <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-navy-900/60">
                       <div className="flex items-center gap-2">
@@ -684,7 +684,7 @@ export default function Navbar() {
                     >
                       <span className="flex items-center gap-2">
                         <User className="w-4 h-4 text-accent-orange" />
-                        MY ACCOUNT — LOGIN
+                        MY ACCOUNT ΓÇö LOGIN
                       </span>
                       <ChevronRight className="w-4 h-4 text-slate-500" />
                     </Link>
