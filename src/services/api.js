@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // When running SSR, call http://localhost:8080/api directly, on client call /api
 const isServer = typeof window === 'undefined';
-const API_BASE_URL = isServer ? 'https://api.nandhas.in/api' : '/api';
+const API_BASE_URL = 'https://api.nandhas.in/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
