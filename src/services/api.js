@@ -127,10 +127,12 @@ export const loginUser = async (email, password) => {
  * Authenticate user via Firebase Phone Auth ID token.
  * Endpoint: POST /api/auth/firebase
  * @param {string} firebaseIdToken
+ * @param {string} fullName (Optional) for new customers
  * @returns {Promise<{ token: string, tokenType: string, id, email, fullName, role }>}
  */
-export const loginWithFirebase = async (firebaseIdToken) => {
-  const res = await api.post('/auth/firebase', {}, {
+export const loginWithFirebase = async (firebaseIdToken, fullName = null) => {
+  const payload = fullName ? { fullName } : {};
+  const res = await api.post('/auth/firebase', payload, {
     headers: {
       Authorization: `Bearer ${firebaseIdToken}`
     }

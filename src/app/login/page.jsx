@@ -31,6 +31,7 @@ function LoginContent() {
   const [fullName, setFullName] = useState('');
   
   const [confirmationResult, setConfirmationResult] = useState(null);
+  const [tempToken, setTempToken] = useState(null);
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -96,7 +97,14 @@ function LoginContent() {
       if (!idToken) throw new Error('Authentication failed. No token received.');
 
       // Send to our backend POST /api/auth/firebase
-      const data = await loginWithFirebase(idToken);
+      const data = await loginWithFirebase(idToken, step === 'create' || step === 'complete-profile' ? fullName : null);
+
+      if (data?.message === 'PROFILE_INCOMPLETE') {
+        setTempToken(idToken);
+        setStep('complete-profile');
+        setLoading(false);
+        return;
+      }
 
       if (!data?.token) {
         throw new Error('Server did not return a valid session.');
@@ -127,6 +135,44 @@ function LoginContent() {
     }
   };
 
+  const handleCompleteProfile = async (e) => {
+    e.preventDefault();
+    if (!fullName.trim()) {
+      setError('Please enter your full name.');
+      return;
+    }
+
+    setError('');
+    setLoading(true);
+
+    try {
+      if (!tempToken) throw new Error('Session expired. Please start over.');
+
+      const data = await loginWithFirebase(tempToken, fullName);
+
+      if (!data?.token) {
+        throw new Error('Server did not return a valid session.');
+      }
+
+      // Store the JWT and user info
+      saveAuth(data.token, {
+        id: data.id,
+        email: data.email,
+        fullName: data.fullName,
+        role: data.role,
+      });
+
+    } catch (err) {
+      console.error(err);
+      setError(
+        err?.response?.data?.message ||
+        'Failed to save your profile. Please try again.'
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100 flex items-center justify-center py-10 px-4 w-full max-w-full overflow-x-hidden">
       <div className="w-full max-w-md space-y-6">
@@ -147,15 +193,17 @@ function LoginContent() {
           {/* Header Banner */}
           <div className="bg-navy-800 px-8 py-7 text-white text-center space-y-2">
             <div className="mx-auto w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center mb-3">
-              {step === 'create' ? <User className="w-6 h-6 text-white" /> : <Phone className="w-6 h-6 text-white" />}
+              {(step === 'create' || step === 'complete-profile') ? <User className="w-6 h-6 text-white" /> : <Phone className="w-6 h-6 text-white" />}
             </div>
             <h1 className="text-xl font-black font-display tracking-tight">
-              {step === 'create' ? 'Create Account' : 'My Account — Login'}
+              {step === 'create' ? 'Create Account' : step === 'complete-profile' ? 'Complete Profile' : 'My Account — Login'}
             </h1>
             <p className="text-xs text-slate-300 leading-relaxed">
               {step === 'create' 
                 ? 'Join Nandhas to track orders and manage quotations.' 
-                : 'Sign in to access your Nandhas account with your phone number.'}
+                : step === 'complete-profile'
+                  ? 'We just need your name to finish setting up your account.'
+                  : 'Sign in to access your Nandhas account with your phone number.'}
             </p>
           </div>
 
@@ -310,6 +358,51 @@ function LoginContent() {
                     <>
                       <CheckCircle2 className="w-4 h-4" />
                       <span>Verify OTP &amp; Login</span>
+                    </>
+                  )}
+                </button>
+              </form>
+            )}
+
+            {/* STEP: COMPLETE PROFILE */}
+            {step === 'complete-profile' && (
+              <form onSubmit={handleCompleteProfile} className="space-y-4">
+                <div className="text-center pb-2">
+                  <p className="text-xs text-slate-500">Almost done! Please enter your name to complete your account.</p>
+                </div>
+                
+                <div className="space-y-1.5">
+                  <label htmlFor="complete-name" className="block text-xs font-semibold text-slate-700">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none" />
+                    <input
+                      id="complete-name"
+                      type="text"
+                      required
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      placeholder="Enter your full name"
+                      className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 text-xs text-slate-800 bg-slate-50 outline-none focus:ring-2 focus:ring-navy-800/20 focus:border-navy-800 transition placeholder:text-slate-400"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={loading || !fullName.trim()}
+                  className="w-full py-3.5 rounded-xl bg-navy-800 hover:bg-navy-900 text-white font-bold text-xs uppercase tracking-wider shadow-md transition flex items-center justify-center gap-2 disabled:opacity-60"
+                >
+                  {loading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Complete Account</span>
                     </>
                   )}
                 </button>
