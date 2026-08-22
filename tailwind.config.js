@@ -9,48 +9,46 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Nandhas Core Professional Industrial Palette
+        // High-Intensity Vibrant Color Palette
         navy: {
-          50: '#f0f5ff',
-          100: '#e5edff',
-          200: '#cddbfe',
-          300: '#b0c2fd',
-          400: '#8ba0fa',
-          500: '#3b5edb',
-          600: '#1d3fad',
-          700: '#123B82', // Secondary Royal Blue
-          800: '#0B1F4D', // Primary Deep Navy
-          900: '#08173a',
-          950: '#040b1d',
+          50: '#f0f6ff',
+          100: '#e0edff',
+          200: '#bae0ff',
+          300: '#7cc7ff',
+          400: '#36a8ff',
+          500: '#0084ff', // Vibrant Electric Blue
+          600: '#0062ff',
+          700: '#0f52ba', // Rich Sapphire Blue
+          800: '#0a1d4a', // Deep Navy
+          900: '#051130',
+          950: '#03081c', // High-Contrast Midnight
         },
         primary: {
-          DEFAULT: '#0B1F4D',
-          hover: '#08173a',
+          DEFAULT: '#0a1d4a',
+          hover: '#051130',
         },
         secondary: {
-          DEFAULT: '#123B82',
-          hover: '#0f326f',
+          DEFAULT: '#0f52ba',
+          hover: '#0062ff',
         },
         accent: {
-          DEFAULT: '#F97316', // Industrial Accent Orange
-          hover: '#ea580c',
-          light: '#fff7ed',
-          orange: '#F97316',
+          DEFAULT: '#ff5722', // High-Intensity Radiant Orange
+          hover: '#e64a19',
+          light: '#fff3e0',
+          orange: '#ff6600',
+          gold: '#ff9900', // Vibrant Gold
+          cyan: '#00f0ff', // High-Intensity Neon Cyan
+          emerald: '#00d084', // Vibrant Emerald Green
         },
         surface: {
-          bg: '#F8FAFC',
-          card: '#FFFFFF',
-          border: '#E2E8F0',
-          dark: '#0F172A',
-        },
-        content: {
-          main: '#111827',
-          muted: '#64748B',
-          light: '#94A3B8',
+          bg: '#f4f7fc',
+          card: '#ffffff',
+          border: '#e2e8f0',
+          dark: '#03081c',
         },
         trust: {
-          green: '#16A34A',
-          'green-light': '#f0fdf4',
+          green: '#00c853',
+          'green-light': '#e8f5e9',
         },
       },
       fontFamily: {
@@ -58,9 +56,11 @@ module.exports = {
         display: ['Outfit', 'Inter', 'sans-serif'],
       },
       boxShadow: {
-        'card': '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)',
-        'card-hover': '0 10px 25px -5px rgba(11, 31, 77, 0.08), 0 8px 10px -6px rgba(11, 31, 77, 0.04)',
-        'dropdown': '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)',
+        'glow-orange': '0 0 25px rgba(255, 102, 0, 0.45)',
+        'glow-blue': '0 0 25px rgba(0, 132, 255, 0.45)',
+        'glow-green': '0 0 25px rgba(0, 208, 132, 0.45)',
+        'glow-cyan': '0 0 25px rgba(0, 240, 255, 0.45)',
+        'card-hover': '0 12px 32px -4px rgba(10, 29, 74, 0.12), 0 8px 16px -4px rgba(10, 29, 74, 0.08)',
       }
     },
   },
