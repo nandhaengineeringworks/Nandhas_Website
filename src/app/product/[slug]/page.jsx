@@ -25,6 +25,7 @@ import ProductCard from '../../../components/ProductCard';
 import { useCart } from '../../../context/CartContext';
 import { useSettings } from '../../../context/SettingsContext';
 import { getProductBySlug, getRelatedProducts } from '../../../services/api';
+import { getProductPrimaryImage, PRODUCT_PLACEHOLDER } from '../../../utils/imageUtils';
 
 const getGroupBadgeStyle = (group) => {
   const g = (group || '').toLowerCase();
@@ -38,9 +39,6 @@ const getGroupBadgeStyle = (group) => {
   return 'bg-slate-100 text-slate-700 border-slate-200';
 };
 
-const PLACEHOLDER_IMG = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80';
-// Blob URLs are browser-session scoped and always fail on the public site
-const safeImageUrl = (url) => (!url || url.startsWith('blob:') ? PLACEHOLDER_IMG : url);
 
 export default function ProductDetailPage() {
   const { showPrices } = useSettings();
@@ -66,7 +64,7 @@ export default function ProductDetailPage() {
         const prod = await getProductBySlug(slug);
         if (prod) {
           setProduct(prod);
-          setSelectedImage(prod.primaryImageUrl || (prod.images && prod.images[0]?.imageUrl));
+          setSelectedImage(getProductPrimaryImage(prod));
           if (prod.variants && prod.variants.length > 0) {
             setSelectedVariant(prod.variants[0]);
           }
@@ -140,9 +138,9 @@ export default function ProductDetailPage() {
           <div className="space-y-3 sm:space-y-4 w-full min-w-0">
             <div className="aspect-[4/3] bg-slate-50 rounded-2xl overflow-hidden border border-surface-border relative group flex items-center justify-center p-3 sm:p-4">
               <img
-                src={safeImageUrl(selectedImage)}
+                src={selectedImage || PRODUCT_PLACEHOLDER}
                 alt={product.name}
-                onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER_IMG; }}
+                onError={(e) => { e.target.onerror = null; e.target.src = PRODUCT_PLACEHOLDER; }}
                 className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
@@ -164,9 +162,9 @@ export default function ProductDetailPage() {
                     }`}
                   >
                     <img
-                      src={safeImageUrl(img.imageUrl)}
+                      src={img.imageUrl || PRODUCT_PLACEHOLDER}
                       alt={img.altText || product.name}
-                      onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER_IMG; }}
+                      onError={(e) => { e.target.onerror = null; e.target.src = PRODUCT_PLACEHOLDER; }}
                       className="w-full h-full object-contain"
                     />
                   </button>
