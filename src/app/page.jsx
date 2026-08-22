@@ -168,7 +168,12 @@ export default function HomePage() {
                 <img 
                   src={currentSlide.desktopImageUrl || currentSlide.imageUrl} 
                   alt="Nandhas promotional banner" 
-                  className="w-full h-auto object-contain sm:object-cover max-h-[220px] xs:max-h-[280px] sm:max-h-[420px] md:max-h-[520px] lg:max-h-[640px]" 
+                  className="w-full h-auto object-contain sm:object-cover min-h-[160px] sm:min-h-[300px] max-h-[220px] xs:max-h-[280px] sm:max-h-[420px] md:max-h-[520px] lg:max-h-[640px]" 
+                  onError={(e) => {
+                    if (currentSlide.imageUrl && e.currentTarget.src !== currentSlide.imageUrl) {
+                      e.currentTarget.src = currentSlide.imageUrl;
+                    }
+                  }}
                 />
               </picture>
             </Link>
