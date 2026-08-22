@@ -22,7 +22,7 @@ import {
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import QuoteModal from '../components/QuoteModal';
-import { getFeaturedProducts, getCategories, getBanners } from '../services/api';
+import { getFeaturedProducts, getCategories, getBanners, getProducts } from '../services/api';
 
 const quickCategories = [
   {
@@ -64,10 +64,10 @@ const quickCategories = [
 ];
 
 const mobileTrustBadges = [
-  { icon: <ShieldCheck className="w-3.5 h-3.5 text-trust-green" />, text: '100% Certified SS304' },
-  { icon: <Award className="w-3.5 h-3.5 text-blue-600" />, text: '1 Year Full Warranty' },
-  { icon: <Truck className="w-3.5 h-3.5 text-amber-600" />, text: 'Pan-India Dispatch' },
-  { icon: <Wrench className="w-3.5 h-3.5 text-purple-600" />, text: 'On-Site Commissioning' },
+  { icon: <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />, text: '100% Certified SS304' },
+  { icon: <Award className="w-3.5 h-3.5 text-blue-500" />, text: '1 Year Full Warranty' },
+  { icon: <Truck className="w-3.5 h-3.5 text-amber-500" />, text: 'Pan-India Dispatch' },
+  { icon: <Wrench className="w-3.5 h-3.5 text-purple-500" />, text: 'On-Site Commissioning' },
 ];
 
 export default function HomePage() {
@@ -147,14 +147,14 @@ export default function HomePage() {
   };
 
   return (
-    <div className="bg-surface-bg min-h-screen font-sans w-full max-w-full overflow-x-hidden">
+    <div className="bg-slate-50 min-h-screen font-sans w-full max-w-full overflow-x-hidden pb-12 sm:pb-0">
       
       {/* 1. HERO SECTION (Dynamic Multi-Device Responsive Banner with Touch Swipe) */}
       {loading ? (
-        <section className="relative min-h-[160px] xs:min-h-[200px] sm:min-h-[380px] animate-pulse overflow-hidden bg-slate-200" aria-label="Loading banners" />
+        <section className="relative min-h-[160px] xs:min-h-[200px] sm:min-h-[380px] animate-shimmer overflow-hidden bg-slate-200" aria-label="Loading banners" />
       ) : hasBanner ? (
         <section 
-          className="relative w-full bg-slate-950 overflow-hidden flex items-center select-none"
+          className="relative w-full bg-slate-950 overflow-hidden flex items-center select-none shadow-md"
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
@@ -179,30 +179,30 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Carousel Navigation Controls (Desktop + Mobile Dots) */}
+          {/* Carousel Controls */}
           {currentSlidesList.length > 1 && (
             <>
               <button
                 onClick={() => setActiveSlide((prev) => (prev === 0 ? currentSlidesList.length - 1 : prev - 1))}
-                className="hidden sm:flex absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-md shadow-lg items-center justify-center hover:bg-accent-orange transition z-20 active:scale-90"
+                className="hidden sm:flex absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-navy-950/60 text-white border border-white/20 backdrop-blur-md shadow-xl items-center justify-center hover:bg-accent-orange transition z-20 active:scale-90"
                 aria-label="Previous Slide"
               >
-                <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setActiveSlide((prev) => (prev === currentSlidesList.length - 1 ? 0 : prev + 1))}
-                className="hidden sm:flex absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-black/40 text-white border border-white/20 backdrop-blur-md shadow-lg items-center justify-center hover:bg-accent-orange transition z-20 active:scale-90"
+                className="hidden sm:flex absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-navy-950/60 text-white border border-white/20 backdrop-blur-md shadow-xl items-center justify-center hover:bg-accent-orange transition z-20 active:scale-90"
                 aria-label="Next Slide"
               >
-                <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                <ChevronRight className="w-5 h-5" />
               </button>
-              <div className="absolute bottom-2 sm:bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 sm:gap-2 rounded-full bg-black/45 px-2 py-1 sm:px-3 sm:py-1.5 backdrop-blur-md border border-white/10">
+              <div className="absolute bottom-2.5 sm:bottom-4 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 sm:gap-2 rounded-full bg-navy-950/70 px-2.5 py-1 sm:px-3 sm:py-1.5 backdrop-blur-md border border-white/15">
                 {currentSlidesList.map((slide, index) => (
                   <button
                     key={slide.id || index}
                     onClick={() => setActiveSlide(index)}
-                    className={`h-1.5 sm:h-2 rounded-full transition-all ${
-                      index === activeSlide % currentSlidesList.length ? 'w-4 sm:w-7 bg-accent-orange' : 'w-1.5 sm:w-2 bg-white/50 hover:bg-white/80'
+                    className={`h-1.5 sm:h-2 rounded-full transition-all duration-300 ${
+                      index === activeSlide % currentSlidesList.length ? 'w-5 sm:w-8 bg-accent-orange shadow-xs' : 'w-1.5 sm:w-2 bg-white/40 hover:bg-white/70'
                     }`}
                     aria-label={`Show banner ${index + 1}`}
                   />
@@ -239,7 +239,7 @@ export default function HomePage() {
         </section>
       )}
 
-      {/* 2. MOBILE QUICK CATEGORY PILL STRIP (Fast 1-Tap Discovery on Mobile) */}
+      {/* 2. MOBILE QUICK CATEGORY PILL STRIP (Horizontal Touch Swiper) */}
       <section className="bg-white border-b border-slate-200/80 py-3 shadow-2xs">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-0.5">
@@ -247,19 +247,19 @@ export default function HomePage() {
               <Link
                 key={idx}
                 href={cat.link}
-                className="group flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-navy-800 hover:text-white border border-slate-200/80 shrink-0 transition-all duration-200 active:scale-95 shadow-2xs"
+                className="group flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-50 hover:bg-navy-800 hover:text-white border border-slate-200/90 shrink-0 transition-all duration-200 active:scale-95 shadow-2xs"
               >
-                <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-white group-hover:bg-white/20 shadow-2xs shrink-0">
+                <div className="flex items-center justify-center w-6.5 h-6.5 rounded-lg bg-white group-hover:bg-white/20 shadow-2xs shrink-0">
                   {cat.icon}
                 </div>
-                <span className="text-xs font-bold text-slate-800 group-hover:text-white tracking-tight shrink-0">
+                <span className="text-xs font-extrabold text-slate-800 group-hover:text-white tracking-tight shrink-0">
                   {cat.name}
                 </span>
                 {cat.badge && (
                   <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded shadow-2xs shrink-0 ${
                     cat.badge === 'Hot' ? 'bg-rose-500 text-white' : 
                     cat.badge === 'New' ? 'bg-emerald-500 text-white' : 
-                    'bg-amber-400 text-slate-900'
+                    'bg-amber-400 text-slate-950 font-extrabold'
                   }`}>
                     {cat.badge}
                   </span>
@@ -271,7 +271,7 @@ export default function HomePage() {
       </section>
 
       {/* 3. MOBILE TRUST & ASSURANCE STRIP */}
-      <section className="bg-slate-100/60 border-b border-slate-200/60 py-2.5">
+      <section className="bg-slate-100/70 border-b border-slate-200/60 py-2.5">
         <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between sm:justify-around gap-3 overflow-x-auto no-scrollbar">
             {mobileTrustBadges.map((badge, idx) => (
@@ -285,10 +285,10 @@ export default function HomePage() {
       </section>
 
       {/* 4. FEATURED PRODUCTS SECTION (High-Density 2-Column Mobile Grid) */}
-      <section className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-6 sm:py-10 space-y-4 sm:space-y-6">
+      <section className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-5 sm:py-10 space-y-3.5 sm:space-y-6">
         <div className="flex items-center justify-between gap-2 px-1">
           <div>
-            <span className="text-[9px] sm:text-[11px] font-bold uppercase tracking-wider text-accent-orange block">
+            <span className="text-[9px] sm:text-[11px] font-extrabold uppercase tracking-wider text-accent-orange block">
               CERTIFIED MACHINERY CATALOGUE
             </span>
             <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-navy-800 font-display tracking-tight mt-0.5">
@@ -297,7 +297,7 @@ export default function HomePage() {
           </div>
           <Link
             href="/machinery"
-            className="text-xs font-bold text-navy-800 hover:text-accent-orange flex items-center transition shrink-0 bg-white sm:bg-transparent px-2.5 py-1.5 sm:p-0 rounded-lg border sm:border-0 border-slate-200 shadow-2xs sm:shadow-none"
+            className="text-xs font-extrabold text-navy-800 hover:text-accent-orange flex items-center transition shrink-0 bg-white sm:bg-transparent px-3 py-1.5 sm:p-0 rounded-xl border sm:border-0 border-slate-200/90 shadow-2xs sm:shadow-none"
           >
             <span>View All</span>
             <ArrowRight className="w-3.5 h-3.5 ml-1" />
@@ -308,7 +308,7 @@ export default function HomePage() {
         {loading ? (
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 xs:gap-3.5 sm:gap-6">
             {[1, 2, 3, 4].map((item) => (
-              <div key={item} className="h-64 sm:h-[360px] animate-pulse rounded-2xl sm:rounded-3xl border border-slate-200 bg-white" />
+              <div key={item} className="h-64 sm:h-[360px] animate-shimmer rounded-2xl sm:rounded-3xl border border-slate-200 bg-white" />
             ))}
           </div>
         ) : featuredProducts.length > 0 ? (
@@ -333,7 +333,7 @@ export default function HomePage() {
 
       {/* 5. MOBILE QUICK RFQ & FACTORY CONSULTATION BANNER */}
       <section className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 pb-8">
-        <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#061a38] via-[#0b2b5b] to-[#123d78] p-5 sm:p-8 text-white relative overflow-hidden shadow-xl border border-navy-800">
+        <div className="rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#040b1d] via-[#0b1f4d] to-[#16377e] p-5 sm:p-8 text-white relative overflow-hidden shadow-xl border border-navy-800">
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="space-y-1.5 max-w-xl">
               <span className="text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest text-accent-orange block">
@@ -350,7 +350,7 @@ export default function HomePage() {
             <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto pt-1">
               <button
                 onClick={() => setQuoteModalOpen(true)}
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-accent-orange hover:bg-accent-hover text-white text-xs font-bold uppercase tracking-wider shadow-lg transition flex items-center justify-center active:scale-95"
+                className="flex-1 sm:flex-initial px-4.5 py-3 rounded-xl bg-accent-orange hover:bg-accent-hover text-white text-xs font-extrabold uppercase tracking-wider shadow-lg transition flex items-center justify-center active:scale-95"
               >
                 <Send className="w-3.5 h-3.5 mr-1.5 shrink-0" />
                 <span>Instant RFQ</span>
@@ -359,17 +359,17 @@ export default function HomePage() {
                 href="https://wa.me/918309004707?text=Hi%20Prahalad%20Nandha,%20I%20want%20to%20inquire%20about%20machinery%20specifications."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#1ebe5d] text-white text-xs font-bold uppercase tracking-wider shadow transition flex items-center justify-center active:scale-95"
+                className="flex-1 sm:flex-initial px-4.5 py-3 rounded-xl bg-[#25D366] hover:bg-[#1ebe5d] text-white text-xs font-extrabold uppercase tracking-wider shadow transition flex items-center justify-center active:scale-95"
               >
                 <MessageCircle className="w-3.5 h-3.5 mr-1.5 shrink-0 fill-current" />
                 <span>WhatsApp</span>
               </a>
               <a
                 href="tel:+918309004707"
-                className="hidden xs:flex px-3 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition items-center justify-center"
+                className="hidden xs:flex px-3.5 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition items-center justify-center"
                 title="Call Direct"
               >
-                <Phone className="w-3.5 h-3.5" />
+                <Phone className="w-3.5 h-3.5 text-amber-400" />
               </a>
             </div>
           </div>
