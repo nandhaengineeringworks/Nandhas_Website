@@ -6,6 +6,12 @@ import { Send, Heart, Eye, Ruler, BadgeCheck } from 'lucide-react';
 import QuoteModal from './QuoteModal';
 import { useSettings } from '../context/SettingsContext';
 
+const PLACEHOLDER_IMG = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80';
+
+// Blob URLs are browser-session local and will always fail on the public site
+const safeImageUrl = (url) =>
+  !url || url.startsWith('blob:') ? PLACEHOLDER_IMG : url;
+
 export default function ProductCard({ product }) {
   const { showPrices } = useSettings();
   const [quoteOpen, setQuoteOpen] = useState(false);
@@ -60,9 +66,10 @@ export default function ProductCard({ product }) {
           <Link href={`/product/${product.slug}`} className="block">
             <div className="relative mt-6 mb-3 sm:mb-4 flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-xl sm:rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-blue-50/50 p-2 sm:p-3">
               <img
-                src={product.primaryImageUrl || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=400&q=80'}
+                src={safeImageUrl(product.primaryImageUrl)}
                 alt={product.name}
                 loading="lazy"
+                onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER_IMG; }}
                 className="h-full w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105"
               />
               <span className="pointer-events-none absolute bottom-2 left-2 rounded-full bg-white/90 px-2 py-0.5 text-[9px] font-bold text-navy-800 opacity-0 shadow-xs transition group-hover:opacity-100 sm:bottom-3 sm:left-3 sm:px-2.5 sm:py-1 sm:text-[10px]">

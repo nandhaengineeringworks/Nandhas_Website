@@ -38,6 +38,10 @@ const getGroupBadgeStyle = (group) => {
   return 'bg-slate-100 text-slate-700 border-slate-200';
 };
 
+const PLACEHOLDER_IMG = 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80';
+// Blob URLs are browser-session scoped and always fail on the public site
+const safeImageUrl = (url) => (!url || url.startsWith('blob:') ? PLACEHOLDER_IMG : url);
+
 export default function ProductDetailPage() {
   const { showPrices } = useSettings();
   const params = useParams();
@@ -136,8 +140,9 @@ export default function ProductDetailPage() {
           <div className="space-y-3 sm:space-y-4 w-full min-w-0">
             <div className="aspect-[4/3] bg-slate-50 rounded-2xl overflow-hidden border border-surface-border relative group flex items-center justify-center p-3 sm:p-4">
               <img
-                src={selectedImage || 'https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80'}
+                src={safeImageUrl(selectedImage)}
                 alt={product.name}
+                onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER_IMG; }}
                 className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
               />
               <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
@@ -158,7 +163,12 @@ export default function ProductDetailPage() {
                       selectedImage === img.imageUrl ? 'border-navy-800 ring-2 ring-navy-800/20' : 'border-surface-border opacity-70 hover:opacity-100'
                     }`}
                   >
-                    <img src={img.imageUrl} alt={img.altText || product.name} className="w-full h-full object-contain" />
+                    <img
+                      src={safeImageUrl(img.imageUrl)}
+                      alt={img.altText || product.name}
+                      onError={(e) => { e.target.onerror = null; e.target.src = PLACEHOLDER_IMG; }}
+                      className="w-full h-full object-contain"
+                    />
                   </button>
                 ))}
               </div>
