@@ -12,12 +12,10 @@ import {
   Truck, 
   Phone, 
   MessageSquare, 
-  Download, 
   ChevronRight,
   Sparkles,
   CheckCircle2,
   Award,
-  Cpu,
   SlidersHorizontal
 } from 'lucide-react';
 import QuoteModal from '../../../components/QuoteModal';
@@ -38,7 +36,6 @@ const getGroupBadgeStyle = (group) => {
   if (g.includes('team') || g.includes('warranty')) return 'bg-indigo-50 text-indigo-700 border-indigo-200';
   return 'bg-slate-100 text-slate-700 border-slate-200';
 };
-
 
 export default function ProductDetailPage() {
   const { showPrices } = useSettings();
@@ -117,34 +114,34 @@ export default function ProductDetailPage() {
   };
 
   return (
-    <div className="bg-surface-bg min-h-screen py-6 sm:py-8 font-sans w-full max-w-full overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6 sm:space-y-10">
+    <div className="bg-surface-bg min-h-screen py-4 sm:py-8 font-sans w-full max-w-full overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
         
         {/* 1. BREADCRUMB */}
-        <div className="flex items-center space-x-2 text-xs text-content-muted overflow-hidden">
+        <div className="flex items-center space-x-2 text-xs text-content-muted overflow-hidden px-1">
           <Link href="/" className="hover:text-navy-800 font-semibold shrink-0">Home</Link>
           <ChevronRight className="w-3.5 h-3.5 shrink-0" />
           <Link href={isMachinery ? '/machinery' : '/interior'} className="hover:text-navy-800 font-semibold shrink-0">
-            {isMachinery ? 'Industrial Machinery' : 'Interior Panels'}
+            {isMachinery ? 'Machinery' : 'Interior'}
           </Link>
           <ChevronRight className="w-3.5 h-3.5 shrink-0" />
           <span className="font-semibold text-content-main truncate">{product.name}</span>
         </div>
 
         {/* 2. TOP PRODUCT SHOWCASE LAYOUT */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-10 items-start bg-white p-4 sm:p-6 lg:p-10 rounded-2xl sm:rounded-3xl border border-surface-border shadow-card">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-10 items-start bg-white p-3.5 sm:p-6 lg:p-10 rounded-2xl sm:rounded-3xl border border-surface-border shadow-card">
           
           {/* Gallery View */}
-          <div className="space-y-3 sm:space-y-4 w-full min-w-0">
-            <div className="aspect-[4/3] bg-slate-50 rounded-2xl overflow-hidden border border-surface-border relative group flex items-center justify-center p-3 sm:p-4">
+          <div className="space-y-2.5 sm:space-y-4 w-full min-w-0">
+            <div className="aspect-[4/3] bg-slate-50 rounded-xl sm:rounded-2xl overflow-hidden border border-surface-border relative group flex items-center justify-center p-2.5 sm:p-4">
               <img
                 src={selectedImage || PRODUCT_PLACEHOLDER}
                 alt={product.name}
                 onError={(e) => { e.target.onerror = null; e.target.src = PRODUCT_PLACEHOLDER; }}
                 className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
-                <span className="text-[9px] sm:text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-lg bg-navy-800 text-white shadow-xs">
+              <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4">
+                <span className="text-[8.5px] sm:text-[10px] font-extrabold uppercase px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg bg-navy-800 text-white shadow-xs">
                   {product.categoryName}
                 </span>
               </div>
@@ -152,12 +149,12 @@ export default function ProductDetailPage() {
 
             {/* Thumbnails Row */}
             {product.images && product.images.length > 1 && (
-              <div className="flex items-center space-x-2 sm:space-x-3 overflow-x-auto pb-1 custom-scrollbar">
+              <div className="flex items-center space-x-2 sm:space-x-3 overflow-x-auto no-scrollbar py-0.5">
                 {product.images.map((img) => (
                   <button
                     key={img.id || img.imageUrl}
                     onClick={() => setSelectedImage(img.imageUrl)}
-                    className={`w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 shrink-0 transition p-1 bg-slate-50 ${
+                    className={`w-14 h-14 sm:w-20 sm:h-20 rounded-xl overflow-hidden border-2 shrink-0 transition p-1 bg-slate-50 active:scale-95 ${
                       selectedImage === img.imageUrl ? 'border-navy-800 ring-2 ring-navy-800/20' : 'border-surface-border opacity-70 hover:opacity-100'
                     }`}
                   >
@@ -174,21 +171,21 @@ export default function ProductDetailPage() {
           </div>
 
           {/* Product Info & Action Controls */}
-          <div className="space-y-4 sm:space-y-6 w-full min-w-0">
-            <div className="space-y-2">
-              <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-content-muted">
+          <div className="space-y-3.5 sm:space-y-6 w-full min-w-0">
+            <div className="space-y-1.5 sm:space-y-2">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-content-muted">
                 <span>SKU: {selectedVariant?.sku || product.sku || 'NAND-IND-2024'}</span>
                 <span>•</span>
                 <span className="text-trust-green flex items-center">
-                  <CheckCircle2 className="w-3.5 h-3.5 mr-1 shrink-0" /> 100% Quality Tested
+                  <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-0.5 shrink-0" /> Tested
                 </span>
                 <span>•</span>
                 <span className="text-slate-700 flex items-center">
-                  <Award className="w-3.5 h-3.5 mr-1 text-accent-orange shrink-0" /> 1 Year Warranty
+                  <Award className="w-3 h-3 sm:w-3.5 sm:h-3.5 mr-0.5 text-accent-orange shrink-0" /> 1Y Warranty
                 </span>
               </div>
 
-              <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-navy-800 font-display leading-tight break-words">
+              <h1 className="text-lg sm:text-2xl md:text-3xl font-black text-navy-800 font-display leading-tight break-words">
                 {product.name}
               </h1>
 
@@ -199,30 +196,30 @@ export default function ProductDetailPage() {
 
             {/* Pricing Section or B2B Price on Request Banner */}
             {showPrices && currentPrice && !product.isQuoteOnly ? (
-              <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-3.5 sm:p-4">
-                <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-500">
+              <div className="rounded-xl sm:rounded-2xl border border-slate-200 bg-slate-50/60 p-3 sm:p-4">
+                <span className="block text-[9px] sm:text-[10px] font-semibold uppercase tracking-wide text-slate-500">
                   Commercial List Price
                 </span>
-                <div className="flex items-baseline gap-2 mt-0.5">
-                  <span className="text-xl sm:text-3xl font-black text-navy-800 font-mono">
+                <div className="flex items-baseline gap-1.5 mt-0.5">
+                  <span className="text-lg sm:text-3xl font-black text-navy-800 font-mono">
                     {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(currentPrice)}
                   </span>
-                  <span className="text-xs text-slate-500 font-semibold">+ 18% GST</span>
+                  <span className="text-[10px] sm:text-xs text-slate-500 font-semibold">+ 18% GST</span>
                 </div>
               </div>
             ) : (
-              <div className="rounded-2xl border border-orange-500/30 bg-orange-50/60 p-3.5 sm:p-4">
-                <div className="flex items-center gap-2">
+              <div className="rounded-xl sm:rounded-2xl border border-orange-500/30 bg-orange-50/60 p-3 sm:p-4">
+                <div className="flex items-center gap-1.5">
                   <span className="inline-flex h-2 w-2 rounded-full bg-accent-orange animate-pulse" />
-                  <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-accent-orange">
+                  <span className="text-[9.5px] sm:text-[11px] font-extrabold uppercase tracking-wider text-accent-orange">
                     B2B Commercial Pricing
                   </span>
                 </div>
-                <strong className="mt-1 block text-lg sm:text-xl font-black text-navy-800 font-display">
+                <strong className="mt-0.5 block text-base sm:text-xl font-black text-navy-800 font-display">
                   Price Available on Request
                 </strong>
-                <span className="mt-0.5 block text-xs text-slate-600">
-                  Direct OEM quotation tailored to your capacity requirements &amp; delivery location.
+                <span className="mt-0.5 block text-[11px] sm:text-xs text-slate-600">
+                  Direct OEM quotation tailored to your required capacity &amp; plant location.
                 </span>
               </div>
             )}
@@ -230,22 +227,22 @@ export default function ProductDetailPage() {
             {/* Model Variant Selector */}
             {product.variants && product.variants.length > 0 && (
               <div className="space-y-2 pt-2 border-t border-slate-100">
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
-                  Select Machine Capacity / Voltage Configuration:
+                <label className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-700">
+                  Select Configuration / Capacity:
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   {product.variants.map((v) => (
                     <button
                       key={v.id}
                       onClick={() => setSelectedVariant(v)}
-                      className={`p-3 rounded-xl border text-left text-xs transition flex flex-col justify-between ${
+                      className={`p-2.5 sm:p-3 rounded-xl border text-left text-xs transition flex flex-col justify-between active:scale-95 ${
                         selectedVariant?.id === v.id
-                          ? 'border-navy-800 bg-navy-50/60 ring-1 ring-navy-800'
+                          ? 'border-navy-800 bg-navy-50/70 ring-1 ring-navy-800'
                           : 'border-surface-border hover:border-slate-300'
                       }`}
                     >
-                      <strong className="text-content-main block">{v.variantName}</strong>
-                      <span className="text-[11px] text-content-muted font-mono mt-0.5">SKU: {v.sku}</span>
+                      <strong className="text-content-main block text-xs">{v.variantName}</strong>
+                      <span className="text-[10px] text-content-muted font-mono mt-0.5">SKU: {v.sku}</span>
                       {showPrices && v.price && (
                         <span className="text-xs font-black text-navy-800 mt-1 font-mono">
                           {new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(v.price)}
@@ -257,31 +254,31 @@ export default function ProductDetailPage() {
               </div>
             )}
 
-            {/* Primary Action Buttons */}
-            <div className="space-y-3 pt-2">
-              <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3">
+            {/* Primary Action Buttons on Desktop / Top Mobile */}
+            <div className="space-y-2.5 pt-2">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
                 <button
                   onClick={() => setQuoteModalOpen(true)}
-                  className="flex-1 py-3.5 px-6 rounded-xl bg-navy-800 hover:bg-navy-900 text-white font-bold text-xs shadow-md transition flex items-center justify-center uppercase tracking-wider"
+                  className="flex-1 py-3 sm:py-3.5 px-5 rounded-xl bg-navy-800 hover:bg-navy-900 text-white font-bold text-xs shadow-md transition flex items-center justify-center uppercase tracking-wider active:scale-95"
                 >
-                  <Send className="w-4 h-4 mr-2 text-accent-orange shrink-0" />
+                  <Send className="w-3.5 h-3.5 mr-2 text-accent-orange shrink-0" />
                   <span>Request Instant RFQ</span>
                 </button>
 
                 <a
-                  href={`https://wa.me/918309004707?text=Hi,%20I%20want%20to%20request%20callback%20for:%20${encodeURIComponent(product.name)}`}
+                  href={`https://wa.me/918309004707?text=Hi%20Prahalad%20Nandha,%20I%20want%20to%20request%20callback%20for:%20${encodeURIComponent(product.name)}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center justify-center uppercase tracking-wider shadow"
+                  className="py-3 sm:py-3.5 px-5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition flex items-center justify-center uppercase tracking-wider shadow active:scale-95"
                 >
-                  <MessageSquare className="w-4 h-4 mr-2 shrink-0" />
-                  <span>Request Callback</span>
+                  <MessageSquare className="w-3.5 h-3.5 mr-2 shrink-0 fill-current" />
+                  <span>WhatsApp Callback</span>
                 </a>
 
                 {showPrices && !product.isQuoteOnly && currentPrice && (
                   <button
                     onClick={handleAddToCart}
-                    className="py-3.5 px-4 rounded-xl bg-accent-orange hover:bg-accent-hover text-white font-bold text-xs transition flex items-center justify-center uppercase shadow"
+                    className="py-3 sm:py-3.5 px-4 rounded-xl bg-accent-orange hover:bg-accent-hover text-white font-bold text-xs transition flex items-center justify-center uppercase shadow active:scale-95"
                     title="Direct Buy"
                   >
                     <ShoppingCart className="w-4 h-4" />
@@ -290,7 +287,7 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Direct Phone Line */}
-              <div className="flex items-center justify-between pt-2 text-xs">
+              <div className="flex items-center justify-between pt-1 text-xs">
                 <a href="tel:+918309004707" className="text-navy-800 hover:underline font-bold flex items-center">
                   <Phone className="w-3.5 h-3.5 mr-1.5 text-accent-orange shrink-0" />
                   <span>Direct Hotline: +91 83090 04707</span>
@@ -305,94 +302,94 @@ export default function ProductDetailPage() {
         <div className="bg-white rounded-2xl sm:rounded-3xl border border-surface-border shadow-card overflow-hidden">
           
           {/* Segmented Navigation Tabs */}
-          <div className="p-2 sm:p-3 bg-slate-50/80 border-b border-slate-200 overflow-x-auto custom-scrollbar">
-            <div className="flex items-center space-x-2 min-w-max">
+          <div className="p-2 sm:p-3 bg-slate-50/80 border-b border-slate-200 overflow-x-auto no-scrollbar">
+            <div className="flex items-center space-x-1.5 sm:space-x-2 min-w-max">
               <button
                 onClick={() => setActiveTab('specs')}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl text-xs font-bold uppercase tracking-wider transition shrink-0 ${
+                className={`inline-flex items-center gap-1.5 px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-bold uppercase tracking-wider transition shrink-0 ${
                   activeTab === 'specs'
                     ? 'bg-navy-800 text-white shadow-md'
                     : 'bg-white text-slate-600 hover:text-navy-800 border border-slate-200/70'
                 }`}
               >
-                <SlidersHorizontal className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${activeTab === 'specs' ? 'text-accent-orange' : 'text-slate-400'}`} />
+                <SlidersHorizontal className={`w-3.5 h-3.5 ${activeTab === 'specs' ? 'text-accent-orange' : 'text-slate-400'}`} />
                 <span>Technical Specifications</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('description')}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl text-xs font-bold uppercase tracking-wider transition shrink-0 ${
+                className={`inline-flex items-center gap-1.5 px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-bold uppercase tracking-wider transition shrink-0 ${
                   activeTab === 'description'
                     ? 'bg-navy-800 text-white shadow-md'
                     : 'bg-white text-slate-600 hover:text-navy-800 border border-slate-200/70'
                 }`}
               >
-                <FileText className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${activeTab === 'description' ? 'text-accent-orange' : 'text-slate-400'}`} />
-                <span>Description &amp; Applications</span>
+                <FileText className={`w-3.5 h-3.5 ${activeTab === 'description' ? 'text-accent-orange' : 'text-slate-400'}`} />
+                <span>Description &amp; Uses</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('installation')}
-                className={`inline-flex items-center gap-2 px-4 py-2.5 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl text-xs font-bold uppercase tracking-wider transition shrink-0 ${
+                className={`inline-flex items-center gap-1.5 px-3 py-2 sm:px-5 sm:py-3 rounded-xl sm:rounded-2xl text-[11px] sm:text-xs font-bold uppercase tracking-wider transition shrink-0 ${
                   activeTab === 'installation'
                     ? 'bg-navy-800 text-white shadow-md'
                     : 'bg-white text-slate-600 hover:text-navy-800 border border-slate-200/70'
                 }`}
               >
-                <ShieldCheck className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${activeTab === 'installation' ? 'text-emerald-400' : 'text-slate-400'}`} />
-                <span>Installation &amp; Warranty</span>
+                <ShieldCheck className={`w-3.5 h-3.5 ${activeTab === 'installation' ? 'text-emerald-400' : 'text-slate-400'}`} />
+                <span>Warranty &amp; Service</span>
               </button>
             </div>
           </div>
 
           {/* Tab Content Area */}
-          <div className="p-4 sm:p-8 md:p-10">
+          <div className="p-3.5 sm:p-8 md:p-10">
             
             {/* TAB 1: TECHNICAL SPECIFICATIONS */}
             {activeTab === 'specs' && (
-              <div className="space-y-6">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3 pb-3 border-b border-slate-100">
                   <div>
-                    <h3 className="text-base sm:text-lg font-black text-navy-800 font-display tracking-tight">
+                    <h3 className="text-sm sm:text-lg font-black text-navy-800 font-display tracking-tight">
                       Certified Technical Parameters
                     </h3>
-                    <p className="text-xs text-slate-500 font-medium mt-0.5">
+                    <p className="text-[11px] sm:text-xs text-slate-500 font-medium">
                       Standard factory calibrated parameters &bull; Custom CAD scaling available
                     </p>
                   </div>
 
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80 text-[10px] sm:text-[11px] font-bold">
-                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> SS304/SS316 Certified
+                  <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[9.5px] sm:text-[11px] font-bold">
+                      <CheckCircle2 className="w-3 h-3 text-emerald-600" /> SS304/SS316 Certified
                     </span>
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200/80 text-[10px] sm:text-[11px] font-bold">
-                      <Award className="w-3.5 h-3.5 text-blue-600" /> ISO 9001:2015
+                    <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[9.5px] sm:text-[11px] font-bold">
+                      <Award className="w-3 h-3 text-blue-600" /> ISO 9001:2015
                     </span>
                   </div>
                 </div>
 
-                {/* Specification Table with Horizontal Scroll wrapper */}
+                {/* Specification Table */}
                 {product.specs && product.specs.length > 0 ? (
-                  <div className="overflow-x-auto rounded-2xl border border-slate-200 shadow-2xs custom-scrollbar">
-                    <table className="w-full min-w-[450px] text-left text-xs border-collapse">
+                  <div className="overflow-x-auto rounded-xl sm:rounded-2xl border border-slate-200 shadow-2xs custom-scrollbar">
+                    <table className="w-full min-w-[340px] text-left text-xs border-collapse">
                       <thead>
-                        <tr className="bg-slate-100 text-slate-600 border-b border-slate-200 text-[11px] font-black uppercase tracking-wider">
-                          <th className="py-3 px-4 font-bold">Parameter</th>
-                          <th className="py-3 px-4 font-bold">Engineering Value</th>
-                          <th className="py-3 px-4 font-bold text-right">Category</th>
+                        <tr className="bg-slate-100 text-slate-600 border-b border-slate-200 text-[10px] sm:text-[11px] font-black uppercase tracking-wider">
+                          <th className="py-2.5 px-3 sm:px-4 font-bold">Parameter</th>
+                          <th className="py-2.5 px-3 sm:px-4 font-bold">Value</th>
+                          <th className="py-2.5 px-3 sm:px-4 font-bold text-right hidden xs:table-cell">Category</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-100">
                         {product.specs.map((spec, idx) => (
                           <tr key={idx} className="hover:bg-slate-50/70 even:bg-slate-50/30">
-                            <td className="py-3 px-4 font-bold text-slate-800">
+                            <td className="py-2.5 px-3 sm:px-4 font-bold text-slate-800 text-[11px] sm:text-xs">
                               {spec.specKey}
                             </td>
-                            <td className="py-3 px-4 font-mono font-bold text-navy-900">
+                            <td className="py-2.5 px-3 sm:px-4 font-mono font-bold text-navy-900 text-[11px] sm:text-xs">
                               {spec.specValue}
                             </td>
-                            <td className="py-3 px-4 text-right">
-                              <span className={`inline-block px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase border ${getGroupBadgeStyle(spec.specGroup)}`}>
+                            <td className="py-2.5 px-3 sm:px-4 text-right hidden xs:table-cell">
+                              <span className={`inline-block px-2 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-extrabold uppercase border ${getGroupBadgeStyle(spec.specGroup)}`}>
                                 {spec.specGroup || 'General'}
                               </span>
                             </td>
@@ -402,9 +399,9 @@ export default function ProductDetailPage() {
                     </table>
                   </div>
                 ) : (
-                  <div className="p-6 bg-slate-50 rounded-2xl border border-dashed border-slate-300 text-center space-y-2">
+                  <div className="p-4 sm:p-6 bg-slate-50 rounded-xl sm:rounded-2xl border border-dashed border-slate-300 text-center space-y-1">
                     <p className="text-xs text-slate-600 font-semibold">Standard engineering specifications catalog.</p>
-                    <p className="text-[11px] text-slate-400">Contact our manufacturing plant for custom technical drawings.</p>
+                    <p className="text-[10px] sm:text-[11px] text-slate-400">Contact our manufacturing plant for custom technical drawings.</p>
                   </div>
                 )}
               </div>
@@ -412,9 +409,9 @@ export default function ProductDetailPage() {
 
             {/* TAB 2: DESCRIPTION & APPLICATIONS */}
             {activeTab === 'description' && (
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-                <div className="lg:col-span-2 space-y-4 text-xs text-slate-700 leading-relaxed">
-                  <h3 className="text-base sm:text-lg font-black text-navy-800 font-display">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-8">
+                <div className="lg:col-span-2 space-y-3 text-xs text-slate-700 leading-relaxed">
+                  <h3 className="text-sm sm:text-lg font-black text-navy-800 font-display">
                     Product Engineering Blueprint
                   </h3>
                   <p className="whitespace-pre-line leading-relaxed text-slate-600 text-xs sm:text-sm">
@@ -422,21 +419,21 @@ export default function ProductDetailPage() {
                   </p>
                 </div>
 
-                <div className="p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-200 space-y-2.5">
+                <div className="p-3.5 sm:p-5 bg-slate-50 rounded-xl sm:rounded-2xl border border-slate-200 space-y-2">
                   <h4 className="text-xs font-extrabold uppercase tracking-wider text-navy-800">
                     Primary Industry Sectors
                   </h4>
-                  <ul className="space-y-1.5 text-xs text-slate-600">
+                  <ul className="space-y-1 text-xs text-slate-600">
                     <li className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-blue-500" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-blue-500" />
                       <span>Commercial Dairy Processing</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-accent-orange" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-accent-orange" />
                       <span>Ice Cream &amp; Dessert Production</span>
                     </li>
                     <li className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-500" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                       <span>Beverage &amp; Liquid Bottling</span>
                     </li>
                   </ul>
@@ -446,33 +443,33 @@ export default function ProductDetailPage() {
 
             {/* TAB 3: INSTALLATION, WARRANTY & DELIVERY */}
             {activeTab === 'installation' && (
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                  <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 text-blue-700 flex items-center justify-center">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-xs">
+                <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <div className="w-8 h-8 rounded-xl bg-blue-50 border border-blue-100 text-blue-700 flex items-center justify-center">
                     <Wrench className="w-4 h-4" />
                   </div>
                   <strong className="text-xs sm:text-sm font-bold text-navy-800 block">On-Site Commissioning</strong>
-                  <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
                     Factory mechanical engineers visit your plant site for precision laser leveling, piping trials, and operator safety training.
                   </p>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                  <div className="w-9 h-9 rounded-xl bg-orange-50 border border-orange-100 text-accent-orange flex items-center justify-center">
+                <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <div className="w-8 h-8 rounded-xl bg-orange-50 border border-orange-100 text-accent-orange flex items-center justify-center">
                     <Award className="w-4 h-4" />
                   </div>
                   <strong className="text-xs sm:text-sm font-bold text-navy-800 block">1 Year OEM Warranty</strong>
-                  <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
                     Full 12-month manufacturer warranty covering heavy-duty motors, gearboxes, and electrical PLC controllers.
                   </p>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                  <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center">
+                <div className="p-4 sm:p-5 rounded-xl sm:rounded-2xl bg-slate-50 border border-slate-200 space-y-1.5">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-50 border border-emerald-100 text-emerald-600 flex items-center justify-center">
                     <Truck className="w-4 h-4" />
                   </div>
                   <strong className="text-xs sm:text-sm font-bold text-navy-800 block">Pan-India Logistics</strong>
-                  <p className="text-[11px] sm:text-xs text-slate-600 leading-relaxed">
+                  <p className="text-[11px] text-slate-600 leading-relaxed">
                     Heavy-duty export wooden crating with complete transit insurance dispatched directly across all states.
                   </p>
                 </div>
@@ -482,19 +479,53 @@ export default function ProductDetailPage() {
           </div>
         </div>
 
-        {/* 4. RELATED MACHINES */}
+        {/* 4. RELATED PRODUCTS - 2-Column Responsive on Mobile */}
         {relatedProducts.length > 0 && (
-          <div className="space-y-4 sm:space-y-6">
-            <h3 className="text-lg sm:text-xl font-bold text-navy-800 font-display">
+          <div className="space-y-3 sm:space-y-6">
+            <h3 className="text-base sm:text-xl font-bold text-navy-800 font-display">
               Related Equipment &amp; Machinery
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+            <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 xs:gap-3.5 sm:gap-6">
               {relatedProducts.slice(0, 4).map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </div>
           </div>
         )}
+      </div>
+
+      {/* 5. MOBILE STICKY BOTTOM CONVERSION BAR */}
+      <div className="fixed bottom-[52px] sm:bottom-[58px] left-0 right-0 z-30 lg:hidden bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-3 py-2 shadow-[0_-4px_20px_rgba(0,0,0,0.08)]">
+        <div className="max-w-md mx-auto flex items-center justify-between gap-2">
+          <div className="min-w-0 flex-1">
+            <span className="text-[10px] text-slate-500 font-semibold block truncate">
+              {product.name}
+            </span>
+            <span className="text-xs font-black text-navy-800 font-mono block truncate">
+              {showPrices && currentPrice && !product.isQuoteOnly 
+                ? new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(currentPrice)
+                : 'Price on Request'}
+            </span>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0">
+            <a
+              href={`https://wa.me/918309004707?text=Hi%20Prahalad%20Nandha,%20I%20want%20to%20inquire%20about:%20${encodeURIComponent(product.name)}`}
+              target="_blank"
+              rel="noreferrer"
+              className="p-2.5 rounded-xl bg-[#25D366] text-white shadow-xs active:scale-95 transition"
+              aria-label="WhatsApp with Prahalad Nandha"
+            >
+              <MessageSquare className="w-4 h-4 fill-current" />
+            </a>
+            <button
+              onClick={() => setQuoteModalOpen(true)}
+              className="px-3.5 py-2.5 rounded-xl bg-navy-800 text-white text-xs font-bold uppercase tracking-wider flex items-center shadow-md active:scale-95 transition"
+            >
+              <Send className="w-3.5 h-3.5 mr-1 text-accent-orange" />
+              <span>Quote</span>
+            </button>
+          </div>
+        </div>
       </div>
 
       <QuoteModal

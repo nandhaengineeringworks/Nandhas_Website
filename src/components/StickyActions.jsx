@@ -6,14 +6,14 @@ import { Phone } from 'lucide-react';
 export default function StickyActions() {
   return (
     <>
-      {/* Floating Call & WhatsApp Buttons */}
-      <div className="fixed bottom-4 right-3.5 sm:bottom-6 sm:right-6 z-40 flex flex-col gap-2.5 sm:gap-3">
+      {/* Floating Call & WhatsApp Buttons - Raised on mobile to sit comfortably above BottomNav */}
+      <div className="fixed bottom-[68px] right-3 sm:bottom-20 sm:right-5 lg:bottom-6 lg:right-6 z-30 flex flex-col gap-2.5 sm:gap-3">
         {/* WhatsApp direct chat */}
         <a
           href="https://wa.me/918309004707?text=Hi%20Prahalad%20Nandha,%20I%20would%20like%20to%20inquire%20about%20Nandhas%20Machinery."
           target="_blank"
           rel="noopener noreferrer"
-          className="group flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg shadow-emerald-500/25 transition-all duration-200 hover:scale-105 hover:bg-[#1ebe5d]"
+          className="group flex h-11 w-11 sm:h-13 sm:w-13 items-center justify-center rounded-full bg-[#25D366] text-white shadow-xl shadow-emerald-500/30 transition-all duration-200 hover:scale-110 active:scale-95 hover:bg-[#1ebe5d]"
           title="Direct WhatsApp with Prahalad Nandha"
           aria-label="WhatsApp with Prahalad Nandha"
         >
@@ -22,14 +22,14 @@ export default function StickyActions() {
           </svg>
         </a>
 
-        {/* Call button */}
+        {/* Direct Call button */}
         <a
           href="tel:+918309004707"
-          className="group flex h-12 w-12 sm:h-14 sm:w-14 items-center justify-center rounded-full bg-navy-800 text-white shadow-lg shadow-navy-900/30 transition-all duration-200 hover:scale-105 hover:bg-navy-700"
+          className="group flex h-11 w-11 sm:h-13 sm:w-13 items-center justify-center rounded-full bg-navy-800 text-white shadow-xl shadow-navy-900/40 transition-all duration-200 hover:scale-110 active:scale-95 hover:bg-navy-700"
           title="Direct Phone Call - Prahalad Nandha"
           aria-label="Call Prahalad Nandha"
         >
-          <Phone className="h-5 w-5 sm:h-6 sm:w-6" />
+          <Phone className="h-4 w-4 sm:h-5 sm:w-5" />
         </a>
       </div>
     </>

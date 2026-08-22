@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
@@ -411,9 +411,9 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Collapsible Mobile Inline Search Bar */}
+          {/* Collapsible Mobile Inline Search Bar with Quick Chips */}
           {mobileSearchOpen && (
-            <div className="md:hidden pt-2 pb-1 animate-in fade-in slide-in-from-top-1">
+            <div className="md:hidden pt-2 pb-2 animate-in fade-in slide-in-from-top-1 space-y-2">
               <form onSubmit={handleSearchSubmit} className="flex w-full items-center border border-navy-800 rounded-xl overflow-hidden bg-white shadow-xs">
                 <input
                   type="text"
@@ -431,6 +431,24 @@ export default function Navbar() {
                   <Search className="w-4 h-4" />
                 </button>
               </form>
+
+              {/* Quick Search Chips on Mobile */}
+              <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+                <span className="text-[10px] font-bold text-slate-400 shrink-0 uppercase tracking-wider flex items-center">
+                  <TrendingUp className="w-2.5 h-2.5 mr-0.5 text-accent-orange" />
+                  Popular:
+                </span>
+                {popularSearches.slice(0, 4).map((term, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() => handleQuickSearch(term)}
+                    className="text-[10px] bg-slate-100 active:bg-navy-800 active:text-white text-slate-700 px-2.5 py-1 rounded-lg shrink-0 font-medium transition"
+                  >
+                    {term}
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>

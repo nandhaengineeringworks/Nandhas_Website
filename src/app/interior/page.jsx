@@ -71,11 +71,11 @@ function InteriorContent() {
   }
 
   return (
-    <div className="bg-slate-50 min-h-screen py-6 sm:py-10 w-full max-w-full overflow-x-hidden">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 space-y-6 sm:space-y-10">
+    <div className="bg-slate-50 min-h-screen py-4 sm:py-10 w-full max-w-full overflow-x-hidden">
+      <div className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 space-y-4 sm:space-y-8">
         
         {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-xs text-slate-500 overflow-hidden">
+        <div className="flex items-center space-x-2 text-xs text-slate-500 overflow-hidden px-1">
           <Link href="/" className="hover:text-brand-600 shrink-0">Home</Link>
           <ChevronRight className="w-3.5 h-3.5 shrink-0" />
           <span className="font-semibold text-slate-900 truncate">Architectural Interior Panels</span>
@@ -83,7 +83,7 @@ function InteriorContent() {
 
         {/* Dynamic Multi-Device Responsive Hero Banner */}
         {currentBanner && (
-          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl min-h-[260px] xs:min-h-[300px] sm:min-h-[400px] flex items-center">
+          <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl min-h-[220px] xs:min-h-[260px] sm:min-h-[400px] flex items-center">
             {/* Background Images */}
             <div className="absolute inset-0 z-0">
               <picture>
@@ -101,14 +101,14 @@ function InteriorContent() {
             </div>
 
             {/* Banner Copy & CTAs */}
-            <div className="relative z-10 p-5 sm:p-10 md:p-12 text-white max-w-2xl space-y-3 sm:space-y-4">
+            <div className="relative z-10 p-4 sm:p-10 md:p-12 text-white max-w-2xl space-y-2.5 sm:space-y-4">
               {currentBanner.smallTag && (
-                <span className="inline-flex items-center text-[10px] sm:text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-500/20 px-3 py-1 rounded-full border border-amber-400/30 backdrop-blur-sm">
-                  <Sparkles className="w-3.5 h-3.5 mr-1.5 shrink-0" /> {currentBanner.smallTag}
+                <span className="inline-flex items-center text-[9px] sm:text-xs font-bold uppercase tracking-widest text-amber-400 bg-amber-500/20 px-2.5 py-0.5 sm:py-1 rounded-full border border-amber-400/30 backdrop-blur-sm">
+                  <Sparkles className="w-3.5 h-3.5 mr-1 shrink-0" /> {currentBanner.smallTag}
                 </span>
               )}
 
-              <h1 className="text-2xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-white leading-tight">
+              <h1 className="text-xl sm:text-4xl md:text-5xl font-black font-display tracking-tight text-white leading-tight">
                 {currentBanner.title}
               </h1>
 
@@ -130,13 +130,13 @@ function InteriorContent() {
                 </div>
               )}
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 pt-1 sm:pt-2">
                 {currentBanner.primaryButtonEnabled !== false && (
                   <button
                     onClick={() => setSampleModalOpen(true)}
-                    className="px-5 py-3 sm:px-6 sm:py-3.5 bg-gradient-to-r from-accent-orange to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center cursor-pointer"
+                    className="px-4 py-2.5 sm:px-6 sm:py-3.5 bg-gradient-to-r from-accent-orange to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs rounded-xl shadow-lg transition flex items-center justify-center cursor-pointer active:scale-95"
                   >
-                    <Send className="w-3.5 h-3.5 mr-2 shrink-0" />
+                    <Send className="w-3.5 h-3.5 mr-1.5 shrink-0" />
                     <span>{currentBanner.primaryButtonText || 'Request Swatch Sample Kit'}</span>
                   </button>
                 )}
@@ -144,7 +144,7 @@ function InteriorContent() {
                 {currentBanner.secondaryButtonEnabled !== false && (
                   <Link
                     href={currentBanner.secondaryButtonLink || '/contact'}
-                    className="px-5 py-3 sm:px-6 sm:py-3.5 bg-white/15 hover:bg-white/25 text-white border border-white/30 font-bold text-xs rounded-xl backdrop-blur-sm transition flex items-center justify-center text-center"
+                    className="px-4 py-2.5 sm:px-6 sm:py-3.5 bg-white/15 hover:bg-white/25 text-white border border-white/30 font-bold text-xs rounded-xl backdrop-blur-sm transition flex items-center justify-center text-center active:scale-95"
                   >
                     <span>{currentBanner.secondaryButtonText || 'Talk to Design Team'}</span>
                   </Link>
@@ -155,21 +155,25 @@ function InteriorContent() {
         )}
 
         {/* Category Pill Filters */}
-        <div className="flex items-center space-x-2 overflow-x-auto pb-2 custom-scrollbar">
+        <div className="flex items-center space-x-2 overflow-x-auto no-scrollbar py-1">
           <button
             onClick={() => setSelectedCat('')}
-            className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs font-bold shrink-0 transition ${
-              selectedCat === '' ? 'bg-amber-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+            className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition active:scale-95 ${
+              selectedCat === '' 
+                ? 'bg-amber-600 text-white shadow-xs' 
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
             }`}
           >
-            All Interior Collections ({products.length})
+            All Collections ({products.length})
           </button>
           {categories.map((c) => (
             <button
               key={c.id}
               onClick={() => setSelectedCat(c.slug)}
-              className={`px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs font-bold shrink-0 transition ${
-                selectedCat === c.slug ? 'bg-amber-600 text-white shadow-xs' : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold shrink-0 transition active:scale-95 ${
+                selectedCat === c.slug 
+                  ? 'bg-amber-600 text-white shadow-xs' 
+                  : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
               }`}
             >
               {c.name}
@@ -177,25 +181,25 @@ function InteriorContent() {
           ))}
         </div>
 
-        {/* Products Grid */}
+        {/* Products Grid - 2-Column Responsive on Mobile */}
         {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 xs:gap-3.5 sm:gap-6">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="bg-white rounded-3xl p-4 border border-slate-200 animate-pulse space-y-3">
-                <div className="h-44 bg-slate-100 rounded-2xl" />
+              <div key={i} className="bg-white rounded-2xl sm:rounded-3xl p-3 sm:p-4 border border-slate-200 animate-pulse space-y-3">
+                <div className="h-36 sm:h-44 bg-slate-100 rounded-xl" />
                 <div className="h-4 bg-slate-100 rounded w-3/4" />
                 <div className="h-3 bg-slate-100 rounded w-1/2" />
               </div>
             ))}
           </div>
         ) : filteredProducts.length === 0 ? (
-          <div className="bg-white rounded-3xl p-10 sm:p-16 text-center border border-slate-200 space-y-3">
+          <div className="bg-white rounded-2xl sm:rounded-3xl p-8 sm:p-16 text-center border border-slate-200 space-y-3">
             <Layers className="w-10 h-10 sm:w-12 sm:h-12 text-slate-300 mx-auto" />
-            <h3 className="text-base font-bold text-slate-700">No products found in this collection</h3>
+            <h3 className="text-sm sm:text-base font-bold text-slate-700">No products found in this collection</h3>
             <p className="text-xs text-slate-400">Please select another category or check back later.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 xs:gap-3.5 sm:gap-6">
             {filteredProducts.map((prod) => (
               <ProductCard key={prod.id} product={prod} />
             ))}

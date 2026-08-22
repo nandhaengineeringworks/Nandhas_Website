@@ -269,7 +269,7 @@ export default function Footer() {
       </div>
 
       {/* 3. SUB-FOOTER BOTTOM BAR */}
-      <div className="border-t border-slate-800/80 bg-[#020e1f] py-4 text-xs text-slate-400">
+      <div className="border-t border-slate-800/80 bg-[#020e1f] pt-4 pb-12 sm:pb-4 text-xs text-slate-400">
         <div className="mx-auto flex max-w-7xl flex-col sm:flex-row items-center justify-between gap-3 px-3 sm:px-6 lg:px-8 text-center sm:text-left">
           
           {/* Copyright */}
